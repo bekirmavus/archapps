@@ -11,4 +11,5 @@ makepkg -si
 cd ..
 rm -r yay
 
+#vscode install
 yay -S visual-studio-code-bin
