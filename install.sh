@@ -116,7 +116,7 @@ appBaseDevel=false
 appFlatpak=false
 appAmberol=false
 
-appAurNames=("yakuake" "guake" "chromium" "firefox" "thunderbird" "git" "nodejs" "npm" "flameshot" "wget" "curl" "gparted" "dosfstools", "eclipse-ecj" "base-devel" "flatpak" "amberol")
+appAurNames=("yakuake" "guake" "chromium" "firefox" "thunderbird" "git" "nodejs" "npm" "flameshot" "wget" "curl" "gparted" "dosfstools" "eclipse-ecj" "base-devel" "flatpak" "amberol")
 appNames=(  "Yakuake - Dropdown Terminal for KDE only" "Guake - Dropdow Terminal" "Chromium - Web Browser"  "Firefox - Web Browser" "Thunderbird - Mailing App" "Git" "Nodejs" "Npm" "Flameshot - Take Screen Shot" "WGet" "Curl" "GParted - Disk Management" "dosfstools - Disk management addons for Windows file formats" "Eclipse - Java Editor" "base-devel" "Flatpak - Package Management" "Amberol - Music tool" )
 preselection=( $appYakuake  $appGuake $appChromium $appFirefox $appThunderbird $appGit $appNodejs $appSelections $appNpm $appFlameshot $appWget $appCurl $appGparted $appDosfstools $appEclipse $appBaseDevel $appFlatpak $appAmberol )
 multiselect result appNames preselection
@@ -138,27 +138,17 @@ echo "Select Yay packages to install: (Git required for yay install)"
 
 
 #pre-select options
-appYay=false
 appVSCode= false
 
-yayPackageNames=("" "visual-studio-code-bin")
-appNames=("YAY" "Visual Studio Code(Yay Needed)")
-preselection=($appYay $appVSCode )
+yayPackageNames=("visual-studio-code-bin")
+appNames=("Visual Studio Code(Yay Needed)")
+preselection=($appVSCode )
 multiselect result appNames preselection
 
-if [[ ${result[0]} = "true" ]]; then
-echo "installing yay"
-git clone https://aur.archlinux.org/yay.git yay
-cd yay
-makepkg -si --noconfirm
-cd ..
-rm -r yay
-echo "yay installed"
-fi
 
 selectedApps=()
 idx=0
-for ((idx=1; idx<=${#result[@]}; idx++)); do
+for ((idx=0; idx<=${#result[@]}; idx++)); do
     if [[ ${result[idx]} = "true" ]]; then selectedApps+=("${yayPackageNames[idx]}"); fi
 done
 
