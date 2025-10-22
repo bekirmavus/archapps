@@ -97,9 +97,7 @@ function multiselect {
     eval $return_value='("${selected[@]}")'
 }
 
-
-
-
+#pre-select options
 appYakuake=false
 appGuake=false
 appChromium=false
@@ -117,25 +115,15 @@ appEclipse=false
 appBaseDevel=false
 appFlatpak=false
 appAmberol=false
-appYay=false
-appVSCode= false
 
-
-my_options=()
-preselection=()
 appAurNames=("yakuake" "guake" "chromium" "firefox" "thunderbird" "git" "nodejs" "npm" "flameshot" "wget" "curl" "gparted" "dosfstools", "eclipse-ecj" "base-devel" "flatpak" "amberol")
-appSize=17
-
-
-
-my_options+=(  "Yakuake - Dropdown Terminal for KDE only" "Guake - Dropdow Terminal" "Chromium - Web Browser"  "Firefox - Web Browser" "Thunderbird - Mailing App" "Git" "Nodejs" "Npm" "Flameshot - Take Screen Shot" "WGet" "Curl" "GParted - Disk Management" "dosfstools - Disk management addons for Windows file formats" "Eclipse - Java Editor" "base-devel" "Flatpak - Package Management" "Amberol - Music tool" "YAY" "Visual Studio Code(Yay Needed)")
-preselection+=( $appYakuake  $appGuake $appChromium $appFirefox $appThunderbird $appGit $appNodejs $appSelections $appNpm $appFlameshot $appWget $appCurl $appGparted $appDosfstools $appEclipse $appBaseDevel $appFlatpak $appAmberol $appYay $appVSCode )
-multiselect result my_options preselection
+appNames=(  "Yakuake - Dropdown Terminal for KDE only" "Guake - Dropdow Terminal" "Chromium - Web Browser"  "Firefox - Web Browser" "Thunderbird - Mailing App" "Git" "Nodejs" "Npm" "Flameshot - Take Screen Shot" "WGet" "Curl" "GParted - Disk Management" "dosfstools - Disk management addons for Windows file formats" "Eclipse - Java Editor" "base-devel" "Flatpak - Package Management" "Amberol - Music tool" )
+preselection=( $appYakuake  $appGuake $appChromium $appFirefox $appThunderbird $appGit $appNodejs $appSelections $appNpm $appFlameshot $appWget $appCurl $appGparted $appDosfstools $appEclipse $appBaseDevel $appFlatpak $appAmberol )
+multiselect result appNames preselection
 
 selectedApps=()
 idx=0
-
-for ((idx=0; idx<=$appSize; idx++)); do
+for ((idx=0; idx<=${#result[@]}; idx++)); do
     if [[ ${result[idx]} = "true" ]]; then selectedApps+=("${appAurNames[idx]}"); fi
 done
 
@@ -144,5 +132,35 @@ echo "Installing selected apps: ${selectedApps[@]}"
 
 sudo pacman -Sy ${selectedApps[@]} --noconfirm
 
+#-------------------------------------------------------
+#install yay and yay packages
+echo "Select Yay packages to install: (Git required for yay install)"
 
 
+#pre-select options
+appYay=false
+appVSCode= false
+
+yayPackageNames=("" "visual-studio-code-bin")
+appNames=("YAY" "Visual Studio Code(Yay Needed)")
+preselection=($appYay $appVSCode )
+multiselect result appNames preselection
+
+if [[ ${result[0]} = "true" ]]; then
+echo "installing yay"
+git clone https://aur.archlinux.org/yay.git yay
+cd yay
+makepkg -si --noconfirm
+cd ..
+rm -r yay
+echo "yay installed"
+fi
+
+selectedApps=()
+idx=0
+for ((idx=1; idx<=${#result[@]}; idx++)); do
+    if [[ ${result[idx]} = "true" ]]; then selectedApps+=("${yayPackageNames[idx]}"); fi
+done
+
+echo "Installing selected apps: ${selectedApps[@]}"
+yay -S ${selectedApps[@]} --noconfirm --answerdiff=None --answeredit=None --sudoloop --save
